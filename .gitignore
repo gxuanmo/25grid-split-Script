@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Playwright debug artifacts
+.playwright-mcp/
+
+# Runtime data — user uploads & generated output
+web/uploads/
+output_result_v4/
+
+# Dev screenshots (not project code)
+screenshots/
+
+# Large test images (~120MB, not practical for git)
+test_images/

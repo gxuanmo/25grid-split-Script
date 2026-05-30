@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grid Splitter</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' fill='%23F5B942'/%3E%3Cpath d='M5.5 0v16M10.5 0v16M0 5.5h16M0 10.5h16' stroke='%2308090A' stroke-width='1'/%3E%3C/svg%3E" />
+</head>
+<body class="wb">
+
+  <!-- Header -->
+  <header class="wb__header">
+    <div class="wb__header-left">
+      <a class="wb__brand" href="/">
+        <svg class="wb__logo" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4">
+          <rect x="1" y="1" width="14" height="14" rx="2" />
+          <path d="M5.67 1v14M10.33 1v14M1 5.67h14M1 10.33h14" />
+        </svg>
+        <span class="wb__brand-name">Grid Splitter</span>
+      </a>
+      <span class="wb__sep" aria-hidden="true">/</span>
+      <span class="wb__file" id="file-name">untitled</span>
+      <span class="wb__chip wb__chip--mono" id="file-size" hidden></span>
+    </div>
+
+    <div class="wb__header-right">
+      <span class="wb__chip" id="status-chip" hidden>
+        <span class="wb__dot"></span>
+        <span id="status-text">ready</span>
+      </span>
+      <button class="wb__btn wb__btn--ghost" id="btn-reset" hidden>
+        <span class="wb__kbd">esc</span>
+        <span>Clear</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main: canvas + inspector -->
+  <main class="wb__main">
+
+    <section class="wb__canvas" id="canvas-area">
+      <!-- Empty: dropzone -->
+      <div class="wb__drop" id="drop-zone" role="button" tabindex="0" aria-label="拖入图片或点击选择">
+        <input type="file" id="file-input" accept=".png,.jpg,.jpeg" hidden />
+        <svg class="wb__drop-icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="6" y="6" width="52" height="52" rx="4" />
+          <path d="M22.5 6v52M41.5 6v52M6 22.5h52M6 41.5h52" />
+        </svg>
+        <div class="wb__drop-title">拖入图片</div>
+        <div class="wb__drop-sub">
+          <span>或</span>
+          <span class="wb__drop-link">点击选择</span>
+          <span class="wb__sep">·</span>
+          <span>PNG / JPG · 200MB</span>
+        </div>
+      </div>
+
+      <!-- Loaded: stage -->
+      <div class="wb__stage" id="stage" hidden>
+        <div class="wb__stage-inner" id="stage-inner">
+          <img class="wb__img" id="preview-img" alt="" />
+          <svg class="wb__overlay" id="grid-overlay" preserveAspectRatio="none"></svg>
+        </div>
+      </div>
+    </section>
+
+    <aside class="wb__inspector" id="inspector" data-state="empty">
+
+      <section class="wb__group">
+        <div class="wb__group-head">Detect</div>
+        <div class="wb__row">
+          <span class="wb__row-label">Auto</span>
+          <span class="wb__row-value wb__row-value--mono" id="auto-grid">—</span>
+        </div>
+        <div class="wb__row">
+          <span class="wb__row-label">Source</span>
+          <span class="wb__row-value wb__row-value--mono" id="auto-source">—</span>
+        </div>
+        <div class="wb__row" id="auto-fallback" hidden>
+          <span class="wb__row-label wb__row-label--warn">!</span>
+          <span class="wb__row-value wb__row-value--warn">检测失败，已用 3×3 兜底</span>
+        </div>
+      </section>
+
+      <section class="wb__group">
+        <div class="wb__group-head">Grid</div>
+        <div class="wb__row wb__row--input">
+          <label class="wb__row-label" for="input-rows">Rows</label>
+          <input class="wb__input" id="input-rows" type="number" min="1" max="20" inputmode="numeric" disabled />
+        </div>
+        <div class="wb__row wb__row--input">
+          <label class="wb__row-label" for="input-cols">Cols</label>
+          <input class="wb__input" id="input-cols" type="number" min="1" max="20" inputmode="numeric" disabled />
+        </div>
+        <button class="wb__btn wb__btn--ghost wb__btn--full" id="btn-preview" disabled>
+          <span>Re-preview</span>
+          <span class="wb__kbd">⏎</span>
+        </button>
+      </section>
+
+      <section class="wb__group">
+        <div class="wb__group-head">Output</div>
+        <div class="wb__row">
+          <span class="wb__row-label">Cell</span>
+          <span class="wb__row-value wb__row-value--mono" id="out-cell">—</span>
+        </div>
+        <div class="wb__row">
+          <span class="wb__row-label">Count</span>
+          <span class="wb__row-value wb__row-value--mono" id="out-count">—</span>
+        </div>
+      </section>
+
+      <section class="wb__group wb__group--cta">
+        <button class="wb__btn wb__btn--primary wb__btn--full" id="btn-split" disabled>
+          <span>Cut</span>
+          <span class="wb__kbd wb__kbd--on-accent" id="kbd-cut">⌘ ↵</span>
+        </button>
+      </section>
+
+    </aside>
+  </main>
+
+  <!-- Footer strip (after cut) -->
+  <footer class="wb__footer" id="footer-strip" hidden>
+    <div class="wb__footer-left">
+      <div class="wb__footer-head">Result</div>
+      <div class="wb__footer-meta">
+        <span class="wb__row-value wb__row-value--mono" id="result-count">0</span>
+        <span class="wb__sep">·</span>
+        <span class="wb__row-value wb__row-value--mono" id="result-cell">0×0</span>
+      </div>
+      <a class="wb__btn wb__btn--primary" id="btn-zip" href="#" download>
+        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M8 2v9M4 7l4 4 4-4M2 13.5h12" />
+        </svg>
+        <span>Download ZIP</span>
+      </a>
+    </div>
+    <div class="wb__footer-strip" id="clips-strip" aria-label="切片列表"></div>
+  </footer>
+
+  <!-- Busy -->
+  <div class="wb__busy" id="busy" hidden>
+    <div class="wb__busy-card">
+      <div class="wb__spinner"></div>
+      <span id="busy-text">Working…</span>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="wb__toast" id="toast" hidden></div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
