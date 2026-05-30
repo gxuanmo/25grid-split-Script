@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python grid_splitter_v4.py:*)",
+      "Bash(python -B grid_splitter_v4.py:*)",
+      "Bash(python -c:*)",
+      "Bash(python --version)",
+      "Bash(ls:*)",
+      "Bash(PYTHONDONTWRITEBYTECODE=1 python:*)"
+    ]
+  }
+}

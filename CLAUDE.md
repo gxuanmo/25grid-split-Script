@@ -9,11 +9,15 @@
 
 ## Key Commands
 ```bash
-# 自动检测网格并切割所有图片
-python grid_splitter_v4.py --auto-grid
+# 自动检测网格并切割所有测试图片
+python grid_splitter_v4.py --auto-grid -i "test_images/*"
 
 # 指定网格切割单张图片
-python grid_splitter_v4.py -r 5 -c 5 -i "图片.png"
+python grid_splitter_v4.py -r 5 -c 5 -i "test_images/九宫格.png"
+
+# Web UI（上传 → 预览 → 切割 → 下载 ZIP）
+python -m uvicorn web.app:app --host 127.0.0.1 --port 8765
+# 或双击 run_web.bat
 
 # 安装依赖
 pip install -r requirements.txt

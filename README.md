@@ -20,34 +20,43 @@ pip install -r requirements.txt
 
 ## 使用方法
 
-### 自动检测网格
+### Web UI（推荐）
 ```bash
-# 自动检测所有图片的网格维度并切割
-python grid_splitter_v4.py --auto-grid
+# 启动后浏览器打开 http://127.0.0.1:8765
+python -m uvicorn web.app:app --host 127.0.0.1 --port 8765
+
+# 或双击 run_web.bat
+```
+上传图片 → 自动检测网格 → 预览网格线 → 可手动调整行列数 → 切割 → 单张预览或打包下载 ZIP。
+
+### CLI：自动检测网格
+```bash
+# 批量处理 test_images/ 下所有图片
+python grid_splitter_v4.py --auto-grid -i "test_images/*"
 
 # 自动检测单张图片
-python grid_splitter_v4.py --auto-grid -i "图片.png"
+python grid_splitter_v4.py --auto-grid -i "test_images/九宫格.png"
 ```
 
-### 手动指定网格
+### CLI：手动指定网格
 ```bash
 # 9 宫格（3x3）
-python grid_splitter_v4.py -r 3 -c 3 -i "图片.png"
+python grid_splitter_v4.py -r 3 -c 3 -i "test_images/九宫格.png"
 
 # 25 宫格（5x5）
-python grid_splitter_v4.py -r 5 -c 5 -i "图片.png"
+python grid_splitter_v4.py -r 5 -c 5 -i "test_images/01.png"
 
 # 60 宫格（10x6）
-python grid_splitter_v4.py -r 10 -c 6 -i "图片.png"
+python grid_splitter_v4.py -r 10 -c 6 -i "test_images/测试2.png"
 ```
 
-### 高级选项
+### CLI：高级选项
 ```bash
 # 禁用自动边框检测
-python grid_splitter_v4.py -r 5 -c 5 -i "图片.png" --no-auto
+python grid_splitter_v4.py -r 5 -c 5 -i "test_images/01.png" --no-auto
 
 # 指定输出目录
-python grid_splitter_v4.py -r 5 -c 5 -i "图片.png" -o "我的输出"
+python grid_splitter_v4.py -r 5 -c 5 -i "test_images/01.png" -o "我的输出"
 ```
 
 ## 输出说明
