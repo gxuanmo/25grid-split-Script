@@ -14,3 +14,7 @@ screenshots/
 
 # Large test images (~120MB, not practical for git)
 test_images/
+
+# /checkup artifacts
+.claude/checkup-state.json
+.claude/checkup-reports/
