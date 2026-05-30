@@ -18,6 +18,11 @@
 pip install -r requirements.txt
 ```
 
+## 运行测试
+```bash
+pytest tests/ -v
+```
+
 ## 使用方法
 
 ### Web UI（推荐）

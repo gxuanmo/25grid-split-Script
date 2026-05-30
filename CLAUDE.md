@@ -19,6 +19,9 @@ python grid_splitter_v4.py -r 5 -c 5 -i "test_images/九宫格.png"
 python -m uvicorn web.app:app --host 127.0.0.1 --port 8765
 # 或双击 run_web.bat
 
+# 运行测试
+pytest tests/ -v
+
 # 安装依赖
 pip install -r requirements.txt
 ```
